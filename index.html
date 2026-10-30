@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Eras: The Story of Us 💕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fredoka+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(180deg, #fff0f3 0%, #ffccd5 50%, #ffb3c1 100%);
+            font-family: 'Nunito', sans-serif;
+            color: #4a4a4a;
+            min-height: 100vh;
+            padding: 20px 10px;
+            overflow-x: hidden;
+        }
+
+        /* Floating Audio Control */
+        .music-player {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 18px;
+            border-radius: 50px;
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            border: 2px solid #ff4d6d;
+            font-weight: 800;
+            color: #ff4d6d;
+            transition: transform 0.2s ease;
+        }
+
+        .music-player:hover {
+            transform: scale(1.05);
+        }
+
+        header {
+            text-align: center;
+            margin: 40px 0 50px 0;
+        }
+
+        header h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #ff4d6d;
+            font-size: 2.3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #6c757d;
+        }
+
+        /* Timeline Container */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* Vertical Line */
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background: linear-gradient(180deg, #ff4d6d, #ff758f, #ffb3c1);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 10px;
+        }
+
+        /* Container around items */
+        .timeline-item {
+            padding: 10px 30px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Left and right positioning */
+        .left { left: 0; }
+        .right { left: 50%; }
+
+        /* Timeline Heart Nodes */
+        .timeline-item::after {
+            content: '💖';
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            right: -16px;
+            background-color: #fff;
+            border: 3px solid #ff4d6d;
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .right::after { left: -16px; }
+
+        /* Content Box */
+        .content {
+            padding: 20px;
+            background: white;
+            position: relative;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.15);
+            border: 3px solid #ffe0e9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 77, 109, 0.25);
+        }
+
+        .date-tag {
+            display: inline-block;
+            background: #ffe0e9;
+            color: #d63384;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .content h3 {
+            color: #ff4d6d;
+            font-family: 'Fredoka One', cursive;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .content p {
+            font-size: 0.93rem;
+            line-height: 1.5;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .love-note {
+            font-family: 'Caveat', cursive;
+            font-size: 1.25rem;
+            color: #e63946;
+            margin-top: 10px;
+            border-top: 1px dashed #ffd1dc;
+            padding-top: 8px;
+        }
+
+        .photo-frame {
+            width: 100%;
+            height: 180px;
+            border-radius: 14px;
+            object-fit: cover;
+            margin-top: 10px;
+            border: 3px solid #fff0f3;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .photo-frame2 {
+            width: 100%;
+            height: 250px;
+            border-radius: 14px;
+            object-fit: cover;
+            margin-top: 10px;
+            border: 3px solid #fff0f3;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .photo-frame5 {
+            width: 100%;
+            height: 300px;
+            border-radius: 14px;
+            object-fit: cover;
+            margin-top: 10px;
+            border: 3px solid #fff0f3;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        /* Final Heart Box */
+        .final-box {
+            text-align: center;
+            max-width: 650px;
+            margin: 60px auto 40px auto;
+            background: white;
+            padding: 35px 25px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+            border: 4px solid #ff4d6d;
+        }
+
+        .final-box h2 {
+            font-family: 'Fredoka One', cursive;
+            color: #ff4d6d;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .comfort-note {
+            background: #fff0f3;
+            border-left: 4px solid #ff4d6d;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 600px) {
+            .timeline::after { left: 31px; }
+            .timeline-item { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .timeline-item::after { left: 15px; }
+            .right { left: 0%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Music Audio Tag -->
+    <audio id="bgMusic" loop>
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Music Player Toggle -->
+    <div class="music-player" id="musicBtn" onclick="toggleMusic()">
+        <span id="musicIcon">🎵</span> <span id="musicText">Play Music</span>
+    </div>
+
+    <header>
+        <div style="font-size: 2.5rem; margin-bottom: 5px;">✨📖</div>
+        <h1>Our Eras: The Digital Love Letter</h1>
+        <p>From knowing you existed to making you mine — our story, step by step. ❤️</p>
+    </header>
+
+    <div class="timeline">
+
+        <!-- Era 1 -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="date-tag">The Unknown (2022)</span>
+                <h3>Just Knowing Each Other Existed</h3>
+                <p>We didn't know each other much back then, just that we existed, around 4 years back.</p>
+                <div class="love-note">"Who would've thought we'd come this far..."</div>
+            </div>
+        </div>
+
+        <!-- Era 2 -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="date-tag">Friends Era (April 2025 - November 2025)</span>
+                <h3>The School Bus Trip</h3>
+                <p>We talked the whole bus trip on my first day of school with you and it was just awesome. We started talking everyday and that changed my life, making you laugh made my day.</p>
+                <img src="2.jpg" class="photo-frame2" alt="Photo 2">
+                <div class="love-note">"Making you laugh became my favorite part of the day."</div>
+            </div>
+        </div>
+
+        <!-- Era 3 -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="date-tag">The Daily Talking Stage (November 2025)</span>
+                <h3>The Night It All Started</h3>
+                <p>I remember how we started talking that night, and just didn't stop. We started talking every night then slowly and gradually, we were talking all day long.</p>
+                <div class="love-note">"Those late-night chats changed everything."</div>
+            </div>
+        </div>
+
+        <!-- Era 4 -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="date-tag">Dropping Home Rides (December 2025)</span>
+                <h3>Rides & Realizations</h3>
+                <p>I remember when it was just the 2 of us and 2 more people in class that day, you were irritated but it was kinda a good day for me, spending so much time with you without being called out for hanging out with you. Then after the bus incident me dropping you home was one of the important events for me, then after tuitions I started to drop you home, those short rides were long enough for me to feel attached to you, to make me realise how I was falling for you.</p>
+                <div class="love-note">"In those short rides, I quietly fell for you."</div>
+            </div>
+        </div>
+
+        <!-- Era 5 -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="date-tag">The First Proposal</span>
+                <h3>A Bit Awkward, But We Got Through</h3>
+                <p>Ik it was very awkward for both of us, I did it too early, I think you just didn't know what to do at the moment, but I am happy I wasn't blocked, I hope you are happy about that too. I was stupid to do that, it was an awful way to propose and it was an awful timing too but yea we got through it ig.</p>
+                <div class="love-note">"Thank goodness you didn't block me! 😂"</div>
+            </div>
+        </div>
+
+        <!-- Era 6 -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="date-tag">Shopping & Little Dates (Dec 2025 & Jan 2026)</span>
+                <h3>Pani Puri, Momos & Waffles</h3>
+                <p>I remember when you invited me to that pani puri date, that was our kinda the first date, I remember it vividly, it was awesome, I was so excited to go, I almost fell down the stairs, but it was awesome, then the second momo date where you gave me a gift I can never forget, the pen you gave me is still with me and I look at it from time to time. Then came the farewell shopping, and it was the experience that made me fall even more for you — looking at you at shops trying stuff and all and me just admiring you was a treat for me, then going to eat something, like the waffle date we both love so much.</p>
+                <img src="5.jpg" class="photo-frame5" alt="Photo 5">
+                <div class="love-note">"I still keep the pen you gave me safe with me."</div>
+            </div>
+        </div>
+
+        <!-- Era 7 -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="date-tag">Farewell (February 2026)</span>
+                <h3>The Event & After Party</h3>
+                <p>I was waiting for you and we couldn't stop talking even at the event and I almost got caught by Farhan. Then clicking pictures of yours and going to the after party with Dhiman and thinking about you the whole time, was making me feel that she has already rejected me but I wanna be there till she is with me, then the occasional outgoing to eat and talking all day.</p>
+                <img src="6.jpg" class="photo-frame" alt="Photo 6">
+                <div class="love-note">"Even in a crowd, my eyes were only looking for you."</div>
+            </div>
+        </div>
+
+        <!-- Era 8 -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="date-tag">Caught (February 2026)</span>
+                <h3>Anxious Days & Reconnection</h3>
+                <p>That was kinda hard to manage, for you it must have been so hard to justify what was going on and all and I was worried what she must be going through, I was anxious all day, checking my phone if you did text me or not, then after like 2-3 weeks I texted cause I really wanted to and you did answer, so I was like maybe we can talk here.</p>
+                <div class="love-note">"Seeing your name pop up on my screen again made everything okay."</div>
+            </div>
+        </div>
+
+        <!-- Era 9 -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="date-tag">Becoming Official (July 2026)</span>
+                <h3>Finding Hope Again</h3>
+                <p>Me being me frightened of rejection again couldn't propose but you did push me so I did and it worked out great, it's been 3 months since the relationship is official and I am so happy we are together. You were the one who I talked to when I was stressed, when I almost lost hope in life and in love, I found you, and it was awesome, I found hope again, and now I am very happy that I am with you, and I hope you are happy with me too.</p>
+                <div class="love-note">"When I almost lost hope in love, I found you."</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Final Love Letter Box -->
+    <div class="final-box">
+        <h2>At Last... I Love You Akshita ❤️</h2>
+        <img src="her.jpg" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #ff4d6d; margin: 10px 0;" alt="Her">
+        <p style="font-size: 1.1rem; color: #ff4d6d; font-weight: 800; margin-top: 5px;">"With all my heart, I love you."</p>
+        
+        <p style="font-size: 0.98rem; color: #555; margin-top: 15px; line-height: 1.6;">
+            It's been 3 months for the relationship on paper but I think it has been going on for much longer, and I love that we are together and I hope this is going to be ok.
+        </p>
+
+        <div class="comfort-note">
+            <strong>🌸 Special Note:</strong><br>
+            Always remember that you are never alone and I am always with you in any condition.
+        </div>
+
+        <button onclick="celebrate()" style="margin-top: 20px; padding: 12px 28px; background: linear-gradient(45deg, #ff4d6d, #ff758f); border: none; color: white; font-weight: 800; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 15px rgba(255, 77, 109, 0.3);">Tap For Love Burst 💖</button>
+    </div>
+
+<!--   <script>
+        let isPlaying = true;
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicText = document.getElementById('musicText');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicIcon.innerText = '🎵';
+                musicText.innerText = 'Play Music';
+            } else {
+                bgMusic.play();
+                musicIcon.innerText = '🎶';
+                musicText.innerText = 'Playing 💕';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function celebrate() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ff758f', '#ffffff']
+            });
+        }
+    </script> -->
+
+    <script>
+        // Try to play music automatically on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const bgMusic = document.getElementById('bgMusic');
+            const musicIcon = document.getElementById('musicIcon');
+            const musicText = document.getElementById('musicText');
+
+            bgMusic.play().then(() => {
+                // Autoplay worked successfully!
+                isPlaying = true;
+                musicIcon.innerText = '🎶';
+                musicText.innerText = 'Playing 💕';
+            }).catch(error => {
+                // If browser blocks autoplay, play on the very first touch/click anywhere on the page
+                document.body.addEventListener('click', function triggerPlay() {
+                    bgMusic.play();
+                    isPlaying = true;
+                    musicIcon.innerText = '🎶';
+                    musicText.innerText = 'Playing 💕';
+                    document.body.removeEventListener('click', triggerPlay);
+                }, { once: true });
+            });
+        });
+
+        let isPlaying = false;
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicText = document.getElementById('musicText');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicIcon.innerText = '🎵';
+                musicText.innerText = 'Play Music';
+            } else {
+                bgMusic.play();
+                musicIcon.innerText = '🎶';
+                musicText.innerText = 'Playing 💕';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function celebrate() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ff758f', '#ffffff']
+            });
+        }
+    </script>
+</body>
+</html>
